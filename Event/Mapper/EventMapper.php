@@ -41,6 +41,24 @@ class EventMapper implements WarmableInterface
     }
 
     /**
+     * Get event getters objects names
+     *
+     * @param $name
+     * @return array
+     */
+    public function getEventObjectFieldsByName($name)
+    {
+        $eventMap = $this->getEventMap($name);
+
+        $names = array();
+        foreach ($eventMap->getGetters() as $method => $getterMeta) {
+            $names[] = $getterMeta['field'];
+        }
+
+        return $names;
+    }
+
+    /**
      * Build action event with objects mapped from cause event
      *
      * @access public
