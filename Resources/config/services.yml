@@ -1,0 +1,96 @@
+parameters:
+    intaro.rule_engine.mapper.class: Intaro\RuleEngineBundle\Event\Mapper\EventMapper
+    intaro.rule_engine.evaluator.class: Intaro\RuleEngineBundle\ExpressionLanguage\RuleExpressionLanguage
+    intaro.rule_engine.rule_listener.class: Intaro\RuleEngineBundle\EventListener\RuleListener
+    intaro.rule_engine.dumper.class: Intaro\RuleEngineBundle\Dumper\EventMapPhpDumper
+    intaro.rule_engine.dispatcher.class: Intaro\RuleEngineBundle\Event\Dispatcher\ActionEventDispatcher
+    intaro.rule_engine.rule_manager.class: Intaro\RuleEngineBundle\Manager\RuleManager
+    intaro.rule_engine.warmer.class: Intaro\RuleEngineBundle\CacheWarmer\EventsMapCacheWarmer
+
+    intaro.rule_engine.cache.file_name: IntaroRuleEngineEventsMap
+
+    intaro.rule_engine.loader.annot_dir.class: Intaro\RuleEngineBundle\Loader\AnnotationDirectoryLoader
+    intaro.rule_engine.loader.annot_file.class: Intaro\RuleEngineBundle\Loader\AnnotationFileLoader
+    intaro.rule_engine.loader.annot_class.class: Intaro\RuleEngineBundle\Loader\AnnotationClassLoader
+    intaro.rule_engine.loader_resolver.class: Symfony\Component\Config\Loader\LoaderResolver
+    intaro.rule_engine.loader.class: Symfony\Component\Config\Loader\DelegatingLoader
+
+services:
+    intaro.rule_engine.loader.annot_class:
+        class: %intaro.rule_engine.loader.annot_class.class%
+        public: false
+        arguments:
+            - @annotation_reader
+
+    intaro.rule_engine.loader.annot_dir:
+        class: %intaro.rule_engine.loader.annot_dir.class%
+        public: false
+        arguments:
+            - @file_locator
+            - @intaro.rule_engine.loader.annot_class
+
+    intaro.rule_engine.loader.annot_file:
+        class: %intaro.rule_engine.loader.annot_file.class%
+        public: false
+        arguments:
+            - @file_locator
+            - @intaro.rule_engine.loader.annot_class
+
+    intaro.rule_engine.loader_resolver:
+        class: %intaro.rule_engine.loader_resolver.class%
+        public: false
+        arguments:
+            - [@intaro.rule_engine.loader.annot_dir, @intaro.rule_engine.loader.annot_file, @intaro.rule_engine.loader.annot_class]
+
+    intaro.rule_engine.loader:
+        class: %intaro.rule_engine.loader.class%
+        public: false
+        arguments:
+            - @intaro.rule_engine.loader_resolver
+
+    intaro.rule_engine.evaluator:
+        class: %intaro.rule_engine.evaluator.class%
+        public: false
+
+    intaro.rule_engine.mapper:
+        class: %intaro.rule_engine.mapper.class%
+        arguments:
+            - @intaro.rule_engine.loader
+            -
+                cache_dir: %kernel.cache_dir%
+                cache_filename: %intaro.rule_engine.cache.file_name%
+                dumper_class: %intaro.rule_engine.dumper.class%
+                bundles: %kernel.bundles%
+                debug: %kernel.debug%
+
+    intaro.rule_engine.dispatcher:
+        class: %intaro.rule_engine.dispatcher.class%
+        arguments:
+            - @event_dispatcher
+
+    intaro.rule_engine.rule_manager:
+        class: %intaro.rule_engine.rule_manager.class%
+#         arguments:
+#             -
+#                 -
+#                     event: "rule_engine.example.cause"
+#                     filter: "message.text matches \"/hello/\""
+#                     rule: "message.text matches \"/rule/\""
+#                     action_events:
+#                         - { name: "rule_engine.example.action" }
+
+    intaro.rule_engine.rule_listener:
+        class: %intaro.rule_engine.rule_listener.class%
+        arguments:
+            - @intaro.rule_engine.evaluator
+            - @intaro.rule_engine.mapper
+            - @intaro.rule_engine.dispatcher
+            - @intaro.rule_engine.rule_manager
+
+    intaro.rule_engine.warmer:
+        class: %intaro.rule_engine.warmer.class%
+        public: false
+        arguments:
+            - @intaro.rule_engine.mapper
+        tags:
+            - { name: kernel.cache_warmer }
