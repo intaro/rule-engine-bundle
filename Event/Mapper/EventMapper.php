@@ -96,9 +96,10 @@ class EventMapper implements WarmableInterface
             if ($setterMeta['required']) {
                 throw new \UnexpectedValueException(
                     sprintf(
-                        'Not found object for method %s of event %s',
+                        'Not found object for method "%s" of the event "%s" (with event name "%s")',
                         $method,
-                        $event->getName()
+                        $eventClass,
+                        $actionEvent->getName()
                     )
                 );
             }
@@ -123,7 +124,7 @@ class EventMapper implements WarmableInterface
         }
 
         if (!$eventMap = $this->map->getEventMap($name)) {
-            throw new \InvalidArgumentException('Not found information about event with name ' . $name);
+            throw new \InvalidArgumentException('Not found information about event with name "' . $name . '"');
         }
 
         return $eventMap;
