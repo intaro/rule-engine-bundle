@@ -50,7 +50,6 @@ services:
 
     intaro.rule_engine.evaluator:
         class: %intaro.rule_engine.evaluator.class%
-        public: false
 
     intaro.rule_engine.mapper:
         class: %intaro.rule_engine.mapper.class%
@@ -70,14 +69,6 @@ services:
 
     intaro.rule_engine.rule_manager:
         class: %intaro.rule_engine.rule_manager.class%
-#         arguments:
-#             -
-#                 -
-#                     event: "rule_engine.example.cause"
-#                     filter: "message.text matches \"/hello/\""
-#                     rule: "message.text matches \"/rule/\""
-#                     action_events:
-#                         - { name: "rule_engine.example.action" }
 
     intaro.rule_engine.rule_listener:
         class: %intaro.rule_engine.rule_listener.class%
