@@ -49,9 +49,9 @@ class RuleListener implements RuleListenerInterface
         $objects = $this->mapper->getEventObjects($event);
 
         // check rule filter
-        if ( (bool) $this->evaluator->evaluate($rule->getFilter(), $objects) ) {
+        if (!$rule->getFilter() || (bool) $this->evaluator->evaluate($rule->getFilter(), $objects) ) {
             //check rule
-            return (bool) $this->evaluator->evaluate($rule->getRule(), $objects);
+            return !$rule->getRule() || (bool) $this->evaluator->evaluate($rule->getRule(), $objects);
         }
 
         return false;
