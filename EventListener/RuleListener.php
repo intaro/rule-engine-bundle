@@ -33,9 +33,11 @@ class RuleListener implements RuleListenerInterface
     {
         $rules = $this->ruleManager->findRulesByEventName($event->getName());
 
-        foreach ($rules as $rule) {
-            if ($this->evaluateRule($rule, $event)) {
-                $this->dispatchActionEvents($rule, $event);
+        if (sizeof($rules)) {
+            foreach ($rules as $rule) {
+                if ($this->evaluateRule($rule, $event)) {
+                    $this->dispatchActionEvents($rule, $event);
+                }
             }
         }
 
