@@ -64,7 +64,9 @@ class AnnotationClassLoader implements LoaderInterface
             foreach ($class->getMethods() as $method) {
                 foreach ($this->reader->getMethodAnnotations($method) as $annot) {
                     if ($annot instanceof $this->annotationMethodGetter) {
-                        $getter = array();
+                        $getter = array(
+                            'type' => $annot->getType(),
+                        );
                         if ($annot->getField()) {
                             $getter['field'] = $annot->getField();
                         }

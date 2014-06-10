@@ -20,6 +20,7 @@ class EventMapPhpDumper
             foreach ($eventMap->getGetters() as $method => $getterMeta) {
                 $result .= ($i > 0 ? ', ' : '') . "'$method' => array(";
                 $result .= "'field' => '" . $getterMeta['field'] . "'";
+                $result .= ",'type' => '" . $getterMeta['type'] . "'";
                 $result .= ")";
                 $i++;
             }
