@@ -7,7 +7,7 @@ namespace Intaro\RuleEngineBundle\Annotation;
 * @Target({"METHOD"})
 * @Attributes({
 *   @Attribute("field", type = "string"),
-*   @Attribute("type", type = "string")
+*   @Attribute("type", type = "string"),
 *   @Attribute("data", type = "bool")
 * })
 */
