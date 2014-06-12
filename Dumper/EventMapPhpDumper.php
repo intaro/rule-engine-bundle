@@ -21,6 +21,7 @@ class EventMapPhpDumper
                 $result .= ($i > 0 ? ', ' : '') . "'$method' => array(";
                 $result .= "'field' => '" . $getterMeta['field'] . "'";
                 $result .= ",'type' => '" . $getterMeta['type'] . "'";
+                $result .= ",'data' => " . ($getterMeta['data'] ? 'true' : 'false') . "";
                 $result .= ")";
                 $i++;
             }
