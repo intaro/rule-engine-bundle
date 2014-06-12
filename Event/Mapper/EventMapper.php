@@ -46,16 +46,24 @@ class EventMapper implements WarmableInterface
      * @param $name
      * @return array
      */
-    public function getEventContext($name)
+    public function getEventContext($name, $onlyData = false)
     {
         $eventMap = $this->getEventMap($name);
 
         $names = array();
         foreach ($eventMap->getGetters() as $method => $getterMeta) {
+            if ($onlyData && !$getterMeta['data']) {
+                continue;
+            }
             $names[$getterMeta['field']] = $getterMeta['type'];
         }
 
         return $names;
+    }
+
+    public function getEventClass($name)
+    {
+        return $this->getEventMap($name)->getClass();
     }
 
     /**
