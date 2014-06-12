@@ -66,6 +66,7 @@ class AnnotationClassLoader implements LoaderInterface
                     if ($annot instanceof $this->annotationMethodGetter) {
                         $getter = array(
                             'type' => $annot->getType(),
+                            'data' => $annot->isData(),
                         );
                         if ($annot->getField()) {
                             $getter['field'] = $annot->getField();

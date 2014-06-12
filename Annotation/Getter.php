@@ -8,12 +8,14 @@ namespace Intaro\RuleEngineBundle\Annotation;
 * @Attributes({
 *   @Attribute("field", type = "string"),
 *   @Attribute("type", type = "string")
+*   @Attribute("data", type = "bool")
 * })
 */
 class Getter
 {
     private $field;
     private $type = 'string';
+    private $data = true;
 
     public function __construct(array $values)
     {
@@ -22,6 +24,9 @@ class Getter
         }
         if (isset($values['type'])) {
             $this->type = $values['type'];
+        }
+        if (isset($values['data'])) {
+            $this->data = (bool) $values['data'];
         }
     }
 
@@ -33,5 +38,10 @@ class Getter
     public function getType()
     {
         return $this->type;
+    }
+
+    public function isData()
+    {
+        return $this->data;
     }
 }
