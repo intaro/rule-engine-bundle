@@ -44,7 +44,7 @@ class RuleListener implements RuleListenerInterface
         return $event;
     }
 
-    private function evaluateRule(RuleInterface $rule, Event $event)
+    protected function evaluateRule(RuleInterface $rule, Event $event)
     {
         $objects = $this->mapper->getEventObjects($event);
 
@@ -57,7 +57,7 @@ class RuleListener implements RuleListenerInterface
         return false;
     }
 
-    private function dispatchActionEvents(RuleInterface $rule, Event $event)
+    protected function dispatchActionEvents(RuleInterface $rule, Event $event)
     {
         foreach ($rule->getActionEvents() as $item) {
             $actionEvent = $this->mapper->buildActionEvent($item, $event);
