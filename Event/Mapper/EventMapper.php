@@ -75,7 +75,7 @@ class EventMapper implements WarmableInterface
      * @param array $mappedObjects (default: array())
      * @return Event
      */
-    public function buildActionEvent(ActionEventInterface $actionEvent, Event $mappedEvent)
+    public function buildActionEvent(ActionEventInterface $actionEvent, Event $mappedEvent, $tag = null)
     {
         $mappedObjects = $actionEvent->getObjects();
 
@@ -94,8 +94,7 @@ class EventMapper implements WarmableInterface
             $value = null;
             if (isset($mappedObjects[$field])) {
                 $value = $mappedObjects[$field];
-            }
-            else {
+            } else {
                 foreach ($mappedEventMap->getGetters() as $getterMethod => $getterMeta) {
                     if ($setterMeta['field'] == $getterMeta['field']) {
                         $value = $mappedEvent->$getterMethod();
@@ -119,7 +118,7 @@ class EventMapper implements WarmableInterface
                 }
             }
 
-            if ($setterMeta['required']) {
+            if ($setterMeta['required'] && (empty($setterMeta['tags']) || in_array($tag, $setterMeta['tags']))) {
                 throw new \UnexpectedValueException(
                     sprintf(
                         'Not found object for method "%s" of the event "%s" (with event name "%s")',

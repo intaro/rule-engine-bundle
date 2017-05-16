@@ -15,13 +15,17 @@ class EventMapPhpDumper
 
         foreach ($map->getEventMaps() as $eventMap) {
             $result .= "        '" . $eventMap->getName() . "' => new EventMap(";
-            $result .= "'" . $eventMap->getName() . "','" . $eventMap->getClass() . "','" . $eventMap->getType() . "',array(";
+            $result .= "'" . $eventMap->getName() . "','" . $eventMap->getClass() . "','"
+                . $eventMap->getType() . "',array(";
             $i = 0;
             foreach ($eventMap->getGetters() as $method => $getterMeta) {
                 $result .= ($i > 0 ? ', ' : '') . "'$method' => array(";
                 $result .= "'field' => '" . $getterMeta['field'] . "'";
                 $result .= ",'type' => '" . $getterMeta['type'] . "'";
                 $result .= ",'data' => " . ($getterMeta['data'] ? 'true' : 'false') . "";
+                $result .= ",'tags' => array(" . (!empty($getterMeta['tags'])
+                    ? "'" . implode("','", $getterMeta['tags']) . "'"
+                    : '') . ")";
                 $result .= ")";
                 $i++;
             }
@@ -32,6 +36,9 @@ class EventMapPhpDumper
                 $result .= "'field' => '" . $setterMeta['field'] . "'";
                 $result .= ",'type' => '" . $setterMeta['type'] . "'";
                 $result .= ",'required' => " . ($setterMeta['required'] ? 'true' : 'false') . "";
+                $result .= ",'tags' => array(" . (!empty($setterMeta['tags'])
+                    ? "'" . implode("','", $setterMeta['tags']) . "'"
+                    : '') . ")";
                 $result .= ")";
                 $i++;
             }
