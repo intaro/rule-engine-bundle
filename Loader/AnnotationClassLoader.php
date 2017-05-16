@@ -48,7 +48,7 @@ class AnnotationClassLoader implements LoaderInterface
         $map->addResource(new FileResource($class->getFileName()));
 
         $eventMap = null;
-        foreach($this->reader->getClassAnnotations($class) as $annot) {
+        foreach ($this->reader->getClassAnnotations($class) as $annot) {
             if ($annot instanceof $this->annotationClassAction) {
                 $eventMap = new EventMap($annot->getName(), $class->getName(), $this->annotationClassAction);
                 continue;
@@ -70,17 +70,17 @@ class AnnotationClassLoader implements LoaderInterface
                         );
                         if ($annot->getField()) {
                             $getter['field'] = $annot->getField();
-                        }
-                        else {
+                        } else {
                             $field = $method->getName();
                             if (strncmp($field, 'get', 3) === 0 && strlen($field) > 3) {
                                 $field = lcfirst(substr($field, 3));
-                            }
-                            elseif (strncmp($field, 'is', 2) === 0 && strlen($field) > 2) {
+                            } elseif (strncmp($field, 'is', 2) === 0 && strlen($field) > 2) {
                                 $field = lcfirst(substr($field, 2));
                             }
                             $getter['field'] = $field;
                         }
+                        $getter['tags'] = $annot->getTags();
+
                         $getters[$method->getName()] = $getter;
                     }
                     if ($annot instanceof $this->annotationMethodSetter) {
@@ -90,14 +90,14 @@ class AnnotationClassLoader implements LoaderInterface
                         );
                         if ($annot->getField()) {
                             $setter['field'] = $annot->getField();
-                        }
-                        else {
+                        } else {
                             $field = $method->getName();
                             if (strncmp($field, 'set', 3) === 0 && strlen($field) > 3) {
                                 $field = lcfirst(substr($field, 3));
                             }
                             $setter['field'] = $field;
                         }
+                        $setter['tags'] = $annot->getTags();
 
                         $setters[$method->getName()] = $setter;
                     }

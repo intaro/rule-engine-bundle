@@ -24,11 +24,12 @@ class EventMapper implements WarmableInterface
      *
      * @access public
      * @param Event $event
+     * @param string|null $tag
      * @return array
      */
-    public function getEventObjects(Event $event)
+    public function getEventObjects(Event $event, $tag = null)
     {
-        $eventMap = $this->getEventMap($event->getName());
+        $eventMap = $this->getEventMap($event->getName(), $tag);
 
         $objects = array();
         foreach ($eventMap->getGetters() as $method => $getterMeta) {
@@ -43,12 +44,14 @@ class EventMapper implements WarmableInterface
     /**
      * Get event getters objects names and types
      *
-     * @param $name
+     * @param string $name
+     * @param boolean $onlyData
+     * @param string $tag
      * @return array
      */
-    public function getEventContext($name, $onlyData = false)
+    public function getEventContext($name, $onlyData = false, $tag = null)
     {
-        $eventMap = $this->getEventMap($name);
+        $eventMap = $this->getEventMap($name, $tag);
 
         $names = array();
         foreach ($eventMap->getGetters() as $method => $getterMeta) {
@@ -75,14 +78,14 @@ class EventMapper implements WarmableInterface
      * @param array $mappedObjects (default: array())
      * @return Event
      */
-    public function buildActionEvent(ActionEventInterface $actionEvent, Event $mappedEvent)
+    public function buildActionEvent(ActionEventInterface $actionEvent, Event $mappedEvent, $tag = null)
     {
         $mappedObjects = $actionEvent->getObjects();
 
-        if (!$mappedEventMap = $this->getEventMap($mappedEvent->getName())) {
+        if (!$mappedEventMap = $this->getEventMap($mappedEvent->getName(), $tag)) {
             throw new \InvalidArgumentException('Undefined mapped event "' . $mappedEvent->getName() . '"');
         }
-        if (!$eventMap = $this->getEventMap($actionEvent->getName())) {
+        if (!$eventMap = $this->getEventMap($actionEvent->getName(), $tag)) {
             throw new \InvalidArgumentException('Undefined action event "' . $actionEvent->getName() . '"');
         }
 
@@ -94,8 +97,7 @@ class EventMapper implements WarmableInterface
             $value = null;
             if (isset($mappedObjects[$field])) {
                 $value = $mappedObjects[$field];
-            }
-            else {
+            } else {
                 foreach ($mappedEventMap->getGetters() as $getterMethod => $getterMeta) {
                     if ($setterMeta['field'] == $getterMeta['field']) {
                         $value = $mappedEvent->$getterMethod();
@@ -143,7 +145,7 @@ class EventMapper implements WarmableInterface
         return $this->map->getEventMaps($type);
     }
 
-    public function getEventMap($name)
+    public function getEventMap($name, $tag = null)
     {
         if (!$this->map) {
             $this->loadMap();
@@ -151,6 +153,15 @@ class EventMapper implements WarmableInterface
 
         if (!$eventMap = $this->map->getEventMap($name)) {
             throw new \InvalidArgumentException('Not found information about event with name "' . $name . '"');
+        }
+        if (!empty($tag)) {
+            $eventMap = clone $eventMap;
+            $eventMap->setSetters(array_filter($eventMap->getSetters(), function ($setterMeta) use ($tag) {
+                return empty($setterMeta['tags']) || in_array($tag, $setterMeta['tags']);
+            }));
+            $eventMap->setGetters(array_filter($eventMap->getGetters(), function ($getterMeta) use ($tag) {
+                return empty($getterMeta['tags']) || in_array($tag, $getterMeta['tags']);
+            }));
         }
 
         return $eventMap;
