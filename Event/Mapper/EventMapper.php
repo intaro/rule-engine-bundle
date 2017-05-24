@@ -104,7 +104,7 @@ class EventMapper implements WarmableInterface
                 }
             }
 
-            if ($value) {
+            if (!is_null($value)) {
                 $isFunction = 'is_' . $setterMeta['type'];
                 $validObject = false;
                 if (function_exists($isFunction) && $isFunction($value)) {
