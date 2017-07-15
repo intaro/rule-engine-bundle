@@ -8,7 +8,8 @@ namespace Intaro\RuleEngineBundle\Annotation;
 * @Attributes({
 *   @Attribute("field", type = "string"),
 *   @Attribute("type", type = "string"),
-*   @Attribute("data", type = "bool")
+*   @Attribute("data", type = "bool"),
+*   @Attribute("tags", type = "array")
 * })
 */
 class Getter
@@ -16,6 +17,7 @@ class Getter
     private $field;
     private $type = 'string';
     private $data = true;
+    private $tags = [];
 
     public function __construct(array $values)
     {
@@ -27,6 +29,9 @@ class Getter
         }
         if (isset($values['data'])) {
             $this->data = (bool) $values['data'];
+        }
+        if (isset($values['tags'])) {
+            $this->tags = $values['tags'];
         }
     }
 
@@ -43,5 +48,14 @@ class Getter
     public function isData()
     {
         return $this->data;
+    }
+
+    public function getTags()
+    {
+        if (!is_array($this->tags)) {
+            $this->tags = [];
+        }
+
+        return $this->tags;
     }
 }

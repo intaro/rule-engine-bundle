@@ -8,7 +8,8 @@ namespace Intaro\RuleEngineBundle\Annotation;
 * @Attributes({
 *   @Attribute("field", type = "string"),
 *   @Attribute("type", type = "string"),
-*   @Attribute("required", type = "bool")
+*   @Attribute("required", type = "bool"),
+*   @Attribute("tags", type = "array")
 * })
 */
 class Setter
@@ -16,6 +17,7 @@ class Setter
     private $field;
     private $type = 'string';
     private $required = true;
+    private $tags = [];
 
     public function __construct(array $values)
     {
@@ -27,6 +29,9 @@ class Setter
         }
         if (isset($values['required'])) {
             $this->required = (bool) $values['required'];
+        }
+        if (isset($values['tags'])) {
+            $this->tags = $values['tags'];
         }
     }
 
@@ -43,5 +48,14 @@ class Setter
     public function isRequired()
     {
         return $this->required;
+    }
+
+    public function getTags()
+    {
+        if (!is_array($this->tags)) {
+            $this->tags = [];
+        }
+
+        return $this->tags;
     }
 }
