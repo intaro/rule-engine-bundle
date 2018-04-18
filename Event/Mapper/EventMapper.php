@@ -194,7 +194,7 @@ class EventMapper implements WarmableInterface
             $cache->write($dumper->dump($map), $map->getResources());
         }
 
-        $this->map = include $cache;
+        $this->map = include $cache->getPath();
     }
 
     public function setOptions(array $options)
