@@ -3,7 +3,7 @@
     "description": "The engine for the rules evaluation based on the EventDispatcher and ExpressionLanguage components",
     "keywords": ["symfony2", "rule", "event", "expression"],
     "type": "symfony-bundle",
-    "license": "GPLv2",
+    "license": "MIT",
     "authors": [{
         "name" : "Ilyas Salikhov"
     }],
